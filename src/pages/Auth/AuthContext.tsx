@@ -4,7 +4,7 @@ import { isAuthenticated, removeToken, saveToken } from "../../utils/auth";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
-  user: any; // Replace `any` with a more specific type if you have user data structure
+  user: any;
   login: (token: string) => void;
   logout: () => void;
 }

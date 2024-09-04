@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import { AuthProvider } from "./pages/Auth/AuthContext";
-import PrivateRoute from "./common/ProtectedRoutes";
+import NotFound from "./pages/NotFound/NotFound";
 
 function App() {
   return (
@@ -12,9 +12,10 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<PrivateRoute component={Dashboard} />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
