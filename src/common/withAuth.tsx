@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../pages/Auth/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 import { Navigate } from "react-router-dom";
 
 const withAuth = <P extends object>(WrappedComponent: React.FC<P>) => {

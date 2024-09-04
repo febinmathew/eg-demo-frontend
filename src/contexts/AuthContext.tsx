@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
-import axios from "../../api/axios";
-import { isAuthenticated, removeToken, saveToken } from "../../utils/auth";
+import axios from "../api/axios";
+import { isAuthenticated, removeToken, saveToken } from "../utils/auth";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
