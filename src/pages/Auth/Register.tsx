@@ -10,8 +10,37 @@ function Register() {
   const [confirmPassword, setConfirmPassword] =
     useState<string>("f$123sdfsdfsdf");
   const navigate = useNavigate();
+  const validateFields = (): boolean => {
+    const errors = {};
+
+    const hasAtLeast1Letter = /[a-zA-Z]/.test(password.trim());
+    const hasAtLeast1Number = /\d/.test(password.trim());
+    const hasAtLeast1SpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(
+      password.trim()
+    );
+    if (password.length < 8) {
+      setError("Password must have at least 8 characters");
+      return false;
+    } else if (!hasAtLeast1Letter) {
+      setError("Password must have at least 1 letter");
+      return false;
+    } else if (!hasAtLeast1Number) {
+      setError("Password must have at least 1 number");
+      return false;
+    } else if (!hasAtLeast1SpecialCharacter) {
+      setError("Password must have at least 1 special character");
+      return false;
+    } else if (password != confirmPassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+    return true;
+  };
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateFields()) {
+      return;
+    }
     try {
       const response = await axios.post<{ email: string; name: string }>(
         "/auth/register",
@@ -21,14 +50,17 @@ function Register() {
           password,
         }
       );
-
-      navigate("/login");
+      if (response.status == 201) {
+        navigate("/login");
+      }
     } catch (e) {
       console.error("Login failed", e);
       if (e.status == 409) {
         setError("Email already exists!");
       } else if (e.status == 429) {
         setError("Too many requests. Please slow down!");
+      } else if (e.status == 400) {
+        setError("Some of the fields does not meet the required constraints!");
       } else {
         setError("Unknown error occurred!");
       }
@@ -51,7 +83,10 @@ function Register() {
               type="text"
               id="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                setError("");
+              }}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 h-12 px-4"
               required
             />
@@ -67,7 +102,10 @@ function Register() {
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 h-12 px-4"
               required
             />
@@ -83,7 +121,10 @@ function Register() {
               type="password"
               id="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError("");
+              }}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 h-12 px-4"
               required
             />
@@ -99,7 +140,10 @@ function Register() {
               type="password"
               id="confirmPassword"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+                setError("");
+              }}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-100 h-12 px-4"
               required
             />

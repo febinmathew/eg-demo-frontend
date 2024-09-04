@@ -19,14 +19,17 @@ function Login() {
           password,
         }
       );
-
-      login(response.data.access_token);
-      navigate("/");
+      if (response.status == 201) {
+        login(response.data.access_token);
+        navigate("/");
+      }
     } catch (e) {
       console.error("Login failed", e, typeof e);
       if (e.status == 401) setError(e.response.data.message);
       else if (e.status == 429) {
         setError("Too many requests. Please slow down!");
+      } else if (e.status == 400) {
+        setError("Some of the fields does not meet the required constraints!");
       } else {
         setError("Unknown error occurred!");
       }
@@ -78,7 +81,7 @@ function Login() {
             />
           </div>
           {error && (
-            <p className="my-4 text-sm text-red-800 text-center">{error}</p>
+            <p className="my-2 text-sm text-red-800 text-center">{error}</p>
           )}
           <button
             type="submit"
