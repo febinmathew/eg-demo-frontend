@@ -1,3 +1,5 @@
+## Description
+
 Frontend developed using React, TypeScript, and Vite to demonstrate basic user authentication.
 
 ## Installation
