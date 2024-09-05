@@ -14,9 +14,8 @@ function Register() {
   const validateFields = (): boolean => {
     const hasAtLeast1Letter = /[a-zA-Z]/.test(password.trim());
     const hasAtLeast1Number = /\d/.test(password.trim());
-    const hasAtLeast1SpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(
-      password.trim()
-    );
+    const hasAtLeast1SpecialCharacter =
+      /[!"#$%&'()*+,-.:;<=>?@[\]^_`{|}~]/.test(password.trim());
     if (password.length < 8) {
       setError("Password must have at least 8 characters");
       return false;
