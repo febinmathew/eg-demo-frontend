@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import axios from "../../api/axios";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import JwtPayloadDto from "../../types/JwtPayloadDto";
 
 function Login() {
   const [error, setError] = useState<string>("");
@@ -12,26 +14,27 @@ function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post<{ access_token: string }>(
-        "/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post<JwtPayloadDto>("/auth/login", {
+        email,
+        password,
+      });
       if (response.status == 201) {
         login(response.data.access_token);
         navigate("/");
       }
-    } catch (e: any) {
-      console.error("Login failed", e, typeof e);
-      if (e.status == 401) setError(e.response.data.message);
-      else if (e.status == 429) {
-        setError("Too many requests. Please slow down!");
-      } else if (e.status == 400) {
-        setError("Some of the fields does not meet the required constraints!");
-      } else {
-        setError("Unknown error occurred!");
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        console.error("Login failed", e, typeof e);
+        if (e.status == 401) setError(e.response?.data.message);
+        else if (e.status == 429) {
+          setError("Too many requests. Please slow down!");
+        } else if (e.status == 400) {
+          setError(
+            "Some of the fields does not meet the required constraints!"
+          );
+        } else {
+          setError("Unknown error occurred!");
+        }
       }
     }
   };

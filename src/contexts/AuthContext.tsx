@@ -1,10 +1,11 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import axios from "../api/axios";
 import { isAuthenticated, removeToken, saveToken } from "../utils/auth";
+import UserDto from "../types/UserDto";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
-  user: any;
+  user: UserDto | null;
   login: (token: string) => void;
   logout: () => void;
 }
@@ -17,7 +18,10 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [auth, setAuth] = useState({
+  const [auth, setAuth] = useState<{
+    isAuthenticated: boolean;
+    user: UserDto | null;
+  }>({
     isAuthenticated: isAuthenticated(),
     user: null,
   });
@@ -25,16 +29,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (auth.isAuthenticated) {
       axios
-        .get("/user/user-data")
+        .get<UserDto>("/user/user-data")
         .then((response) => {
-          setAuth((prev) => ({
-            ...prev,
+          setAuth({
             isAuthenticated: true,
             user: response.data,
-          }));
+          });
         })
         .catch(() => {
-          setAuth((prev) => ({ ...prev, isAuthenticated: false, user: null }));
+          setAuth({ isAuthenticated: false, user: null });
           removeToken();
         });
     }

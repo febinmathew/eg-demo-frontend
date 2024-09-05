@@ -1,6 +1,8 @@
 import { useState } from "react";
 import axios from "../../api/axios";
 import { Link, useNavigate } from "react-router-dom";
+import { AxiosError } from "axios";
+import UserDto from "../../types/UserDto";
 
 function Register() {
   const [error, setError] = useState<string>("");
@@ -39,27 +41,28 @@ function Register() {
       return;
     }
     try {
-      const response = await axios.post<{ email: string; name: string }>(
-        "/auth/register",
-        {
-          name,
-          email,
-          password,
-        }
-      );
+      const response = await axios.post<UserDto>("/auth/register", {
+        name,
+        email,
+        password,
+      });
       if (response.status == 201) {
         navigate("/login");
       }
-    } catch (e: any) {
-      console.error("Registration failed", e);
-      if (e.status == 409) {
-        setError("Email already exists!");
-      } else if (e.status == 429) {
-        setError("Too many requests. Please slow down!");
-      } else if (e.status == 400) {
-        setError("Some of the fields does not meet the required constraints!");
-      } else {
-        setError("Unknown error occurred!");
+    } catch (e) {
+      if (e instanceof AxiosError) {
+        console.error("Registration failed", e);
+        if (e.status == 409) {
+          setError("Email already exists!");
+        } else if (e.status == 429) {
+          setError("Too many requests. Please slow down!");
+        } else if (e.status == 400) {
+          setError(
+            "Some of the fields does not meet the required constraints!"
+          );
+        } else {
+          setError("Unknown error occurred!");
+        }
       }
     }
   };
