@@ -5,8 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const [error, setError] = useState<string>("");
-  const [email, setEmail] = useState<string>("fmfebinmathew4@gmail.com");
-  const [password, setPassword] = useState<string>("f$123sdfsdfsdf");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleLogin = async (e: React.FormEvent) => {
@@ -23,7 +23,7 @@ function Login() {
         login(response.data.access_token);
         navigate("/");
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Login failed", e, typeof e);
       if (e.status == 401) setError(e.response.data.message);
       else if (e.status == 429) {
@@ -83,24 +83,13 @@ function Login() {
           {error && (
             <p className="my-2 text-sm text-red-800 text-center">{error}</p>
           )}
-          <button
-            type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
+          <button className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Login
           </button>
           <p className="text-sm mt-1">
             Don't have an account? <Link to="/register">Register</Link>
           </p>
         </form>
-        {/* {error && (
-          <p
-            id="email-error"
-            className="mt-4 text-sm text-white bg-red-600 p-2 rounded-md text-center"
-          >
-            {error}
-          </p>
-        )} */}
       </div>
     </div>
   );

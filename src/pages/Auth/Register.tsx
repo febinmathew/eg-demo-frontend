@@ -4,15 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const [error, setError] = useState<string>("");
-  const [name, setName] = useState<string>("Febin Mathew");
-  const [email, setEmail] = useState<string>("fmfebinmathew4@gmail.com");
-  const [password, setPassword] = useState<string>("f$123sdfsdfsdf");
-  const [confirmPassword, setConfirmPassword] =
-    useState<string>("f$123sdfsdfsdf");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const navigate = useNavigate();
   const validateFields = (): boolean => {
-    const errors = {};
-
     const hasAtLeast1Letter = /[a-zA-Z]/.test(password.trim());
     const hasAtLeast1Number = /\d/.test(password.trim());
     const hasAtLeast1SpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(
@@ -53,8 +50,8 @@ function Register() {
       if (response.status == 201) {
         navigate("/login");
       }
-    } catch (e) {
-      console.error("Login failed", e);
+    } catch (e: any) {
+      console.error("Registration failed", e);
       if (e.status == 409) {
         setError("Email already exists!");
       } else if (e.status == 429) {
@@ -151,10 +148,7 @@ function Register() {
           {error && (
             <p className="my-2 text-sm text-red-800 text-center">{error}</p>
           )}
-          <button
-            type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
+          <button className="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
             Register
           </button>
         </form>

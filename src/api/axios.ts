@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 import { getToken } from "../utils/auth";
 
 const instance = axios.create({
@@ -6,7 +6,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (config) => {
+  (config): InternalAxiosRequestConfig => {
     const token = getToken();
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
